@@ -365,7 +365,7 @@ class App(tk.Tk):
         
         # Cek apakah qty melebihi stok yang ada
         # (Juga perhitungkan jika barang sudah ada di keranjang)
-        existing_qty = sum(item['qty'] for item in page.cart_items if item['product_id'] == product_id)
+        existing_qty = sum(item['quantity'] for item in page.cart_items if item['product_id'] == product_id)
         
         if (existing_qty + qty) > stock:
             messagebox.showwarning("Stok Kurang", f"Stok tidak mencukupi.\nSisa stok: {stock}\nSudah di keranjang: {existing_qty}")
@@ -375,8 +375,8 @@ class App(tk.Tk):
         found = False
         for item in page.cart_items:
             if item['product_id'] == product_id:
-                item['qty'] += qty
-                item['subtotal'] = item['qty'] * item['price']
+                item['quantity'] += qty
+                item['subtotal'] = item['quantity'] * item['price']
                 found = True
                 break
                 
@@ -384,9 +384,9 @@ class App(tk.Tk):
             # Tambahkan item baru
             page.cart_items.append({
                 'product_id': product_id,
-                'name': product_name,
+                'product_name': product_name,
                 'price': price,
-                'qty': qty,
+                'quantity': qty,
                 'subtotal': price * qty
             })
             
@@ -411,7 +411,7 @@ class App(tk.Tk):
             index = item_no - 1
             
             # Konfirmasi
-            item_name = page.cart_items[index]['name']
+            item_name = page.cart_items[index]['product_name']
             if messagebox.askyesno("Hapus Item", f"Hapus '{item_name}' dari keranjang?"):
                 page.cart_items.pop(index)
                 self.update_cart_display()
@@ -435,9 +435,9 @@ class App(tk.Tk):
             page.tree_cart.insert('', 'end', values=(
                 i,
                 item['product_id'],
-                item['name'],
+                item['product_name'],
                 format_rupiah(item['price']),
-                item['qty'],
+                item['quantity'],
                 format_rupiah(item['subtotal'])
             ), tags=(tag,))
             
