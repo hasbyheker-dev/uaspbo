@@ -304,6 +304,10 @@ class ProductModel:
                 "DELETE FROM products WHERE id=?", (product_id,)
             )
             return True, "Produk berhasil dihapus!"
+        except sqlite3.IntegrityError as e:
+            if "FOREIGN KEY constraint failed" in str(e):
+                return False, "Produk tidak bisa dihapus karena sudah ada di riwayat transaksi.\n\nTips: Jika produk tidak dijual lagi, cukup ubah stoknya menjadi 0 alih-alih menghapusnya."
+            return False, f"Gagal menghapus produk (Integritas data): {e}"
         except sqlite3.Error as e:
             return False, f"Gagal menghapus produk: {e}"
 
